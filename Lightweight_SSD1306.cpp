@@ -13,7 +13,6 @@
 #include "Lightweight_SSD1306.h"
 #include <Arduino.h>
 
-// تعریف فونت 5x7
 const uint8_t Lightweight_SSD1306::font[] PROGMEM = {
     0x00, 0x00, 0x00, 0x00, 0x00, // (space)
     0x00, 0x00, 0x5F, 0x00, 0x00, // !
@@ -112,14 +111,12 @@ const uint8_t Lightweight_SSD1306::font[] PROGMEM = {
     0x08, 0x04, 0x08, 0x10, 0x08, // ~
 };
 
-// سازنده
 Lightweight_SSD1306::Lightweight_SSD1306(uint8_t width, uint8_t height)
     : _width(width), _height(height), _i2c_addr(SSD1306_I2C_ADDRESS), _wire(&Wire),
       _textSize(1), _textColor(1), _cursorX(0), _cursorY(0) {
     memset(_buffer, 0, sizeof(_buffer));
 }
 
-// تابع begin
 bool Lightweight_SSD1306::begin(uint8_t i2c_addr, TwoWire *wire) {
     _i2c_addr = i2c_addr;
     _wire = wire;
@@ -127,54 +124,52 @@ bool Lightweight_SSD1306::begin(uint8_t i2c_addr, TwoWire *wire) {
     _wire->begin();
     _wire->beginTransmission(_i2c_addr);
     if (_wire->endTransmission() != 0) {
-        return false; // اگر نمایشگر پاسخ نداد، false برگردان
+        return false; 
     }
 
-    sendCommand(0xAE); // خاموش کردن نمایشگر
-    sendCommand(0xD5); // تنظیم فرکانس
+    sendCommand(0xAE); 
+    sendCommand(0xD5); 
     sendCommand(0x80);
-    sendCommand(0xA8); // تنظیم چندگانه
+    sendCommand(0xA8); 
     sendCommand(_height - 1);
-    sendCommand(0xD3); // تنظیم افست
+    sendCommand(0xD3); 
     sendCommand(0x00);
-    sendCommand(0x40 | 0x00); // تنظیم خط شروع
-    sendCommand(0x8D); // تنظیم شارژ پمپ
+    sendCommand(0x40 | 0x00); 
+    sendCommand(0x8D); 
     sendCommand(0x14);
-    sendCommand(0x20); // تنظیم حالت آدرس دهی
+    sendCommand(0x20); 
     sendCommand(0x00);
-    sendCommand(0xA1); // تنظیم جهت نمایش
+    sendCommand(0xA1);
     sendCommand(0xC8);
-    sendCommand(0xDA); // تنظیم پیکربندی پین
+    sendCommand(0xDA);
     sendCommand(0x12);
-    sendCommand(0x81); // تنظیم کنتراست
+    sendCommand(0x81);
     sendCommand(0xCF);
-    sendCommand(0xD9); // تنظیم پیش‌شارژ
+    sendCommand(0xD9);
     sendCommand(0xF1);
-    sendCommand(0xDB); // تنظیم ولتاژ Vcomh
+    sendCommand(0xDB);
     sendCommand(0x40);
-    sendCommand(0xA4); // نمایش تمام پیکسل‌ها
-    sendCommand(0xA6); // تنظیم حالت نرمال
-    sendCommand(0xAF); // روشن کردن نمایشگر
+    sendCommand(0xA4);
+    sendCommand(0xA6);
+    sendCommand(0xAF);
 
     clearDisplay();
     display();
     return true;
 }
 
-// تابع clearDisplay
 void Lightweight_SSD1306::clearDisplay() {
     memset(_buffer, 0, sizeof(_buffer));
 }
 
-// تابع display
 void Lightweight_SSD1306::display() {
     for (uint8_t page = 0; page < 8; page++) {
-        sendCommand(0xB0 + page); // تنظیم صفحه
-        sendCommand(0x00); // ستون پایین
-        sendCommand(0x10); // ستون بالا
+        sendCommand(0xB0 + page); 
+        sendCommand(0x00); 
+        sendCommand(0x10); 
 
         _wire->beginTransmission(_i2c_addr);
-        _wire->write(0x40); // حالت داده
+        _wire->write(0x40); 
         for (uint16_t i = 0; i < 128; i++) {
             _wire->write(_buffer[i + page * 128]);
         }
@@ -182,43 +177,35 @@ void Lightweight_SSD1306::display() {
     }
 }
 
-// تابع setTextSize
 void Lightweight_SSD1306::setTextSize(uint8_t size) {
     _textSize = size;
 }
 
-// تابع setTextColor
 void Lightweight_SSD1306::setTextColor(uint16_t color) {
     _textColor = color;
 }
 
-// تابع setCursor
 void Lightweight_SSD1306::setCursor(int16_t x, int16_t y) {
     _cursorX = x;
     _cursorY = y;
 }
 
-// تابع print
 void Lightweight_SSD1306::print(const char *text) {
     while (*text) {
         drawChar(_cursorX, _cursorY, *text, _textColor, _textSize);
-        _cursorX += 6 * _textSize; // فاصله بین کاراکترها
+        _cursorX += 6 * _textSize;
         text++;
     }
 }
 
-// تابع drawChar (برای پشتیبانی از print)
 void Lightweight_SSD1306::drawChar(int16_t x, int16_t y, char c, uint16_t color, uint8_t size) {
-    // اگر کاراکتر خارج از محدوده فونت باشد، آن را نادیده بگیر
     if (c < 32 || c > 126) {
         return;
     }
 
-    // محاسبه اندیس کاراکتر در فونت
     uint8_t charIndex = c - 32;
 
-    // رسم کاراکتر
-    for (int8_t i = 0; i < 5; i++) { // فونت 5x7
+    for (int8_t i = 0; i < 5; i++) {
         uint8_t line = pgm_read_byte(&font[charIndex * 5 + i]);
         for (int8_t j = 0; j < 8; j++) {
             if (line & 0x1) {
@@ -233,7 +220,6 @@ void Lightweight_SSD1306::drawChar(int16_t x, int16_t y, char c, uint16_t color,
     }
 }
 
-// تابع drawBitmap
 void Lightweight_SSD1306::drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color) {
     for (int16_t j = 0; j < h; j++) {
         for (int16_t i = 0; i < w; i++) {
@@ -244,7 +230,6 @@ void Lightweight_SSD1306::drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap
     }
 }
 
-// تابع fillRect
 void Lightweight_SSD1306::fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) {
     for (int16_t i = x; i < x + w; i++) {
         for (int16_t j = y; j < y + h; j++) {
@@ -253,7 +238,6 @@ void Lightweight_SSD1306::fillRect(int16_t x, int16_t y, int16_t w, int16_t h, u
     }
 }
 
-// تابع drawLine
 void Lightweight_SSD1306::drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) {
     int16_t dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
     int16_t dy = -abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
@@ -268,7 +252,6 @@ void Lightweight_SSD1306::drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y
     }
 }
 
-// تابع drawRect
 void Lightweight_SSD1306::drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) {
     drawLine(x, y, x + w, y, color);
     drawLine(x + w, y, x + w, y + h, color);
@@ -276,7 +259,6 @@ void Lightweight_SSD1306::drawRect(int16_t x, int16_t y, int16_t w, int16_t h, u
     drawLine(x, y + h, x, y, color);
 }
 
-// تابع drawPixel
 void Lightweight_SSD1306::drawPixel(int16_t x, int16_t y, uint16_t color) {
     if (x >= 0 && x < _width && y >= 0 && y < _height) {
         if (color) {
@@ -287,18 +269,16 @@ void Lightweight_SSD1306::drawPixel(int16_t x, int16_t y, uint16_t color) {
     }
 }
 
-// تابع sendCommand
 void Lightweight_SSD1306::sendCommand(uint8_t command) {
     _wire->beginTransmission(_i2c_addr);
-    _wire->write(0x00); // حالت فرمان
+    _wire->write(0x00); 
     _wire->write(command);
     _wire->endTransmission();
 }
 
-// تابع sendData
 void Lightweight_SSD1306::sendData(uint8_t *data, size_t size) {
     _wire->beginTransmission(_i2c_addr);
-    _wire->write(0x40); // حالت داده
+    _wire->write(0x40); 
     for (size_t i = 0; i < size; i++) {
         _wire->write(data[i]);
     }
