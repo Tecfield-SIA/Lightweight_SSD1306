@@ -1,4 +1,4 @@
-/* Lightweight_SSD1306.ccp
+/* Lightweight_SSD1306.cpp
   this file is part of Lightweight_SSD1306 library
 
   written by Siavash alizadeh (TECFIELD)
