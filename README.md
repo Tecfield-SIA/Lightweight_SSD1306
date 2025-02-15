@@ -34,8 +34,10 @@ The Lightweight_SSD1306 library is a minimal, fast, and easy-to-use library for 
 
 ## Library Functions
 - Refer to the Functions.md file for information about functions.
+- 📓 [Functions](https://github.com/Tecfield-SIA/Lightweight_SSD1306/blob/main/Functions.md)
 
 ## Conclusion
 - This library allows you to easily work with SSD1306-based OLED displays and display text, shapes, and bitmaps. With this documentation, you can quickly get started and use the library in your projects.
-For questions or discussions, feel free to open an issue or reach out via Linkedin or email me at Tecfield@live.com
-www.linkedin.com/in/siavash-alizadeh-tecfield
+For questions or discussions, feel free to open an issue or reach out via Linkedin or email me at
+- Tecfield@live.com
+- www.linkedin.com/in/siavash-alizadeh-tecfield
