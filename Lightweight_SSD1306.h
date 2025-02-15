@@ -1,3 +1,15 @@
+/* Lightweight_SSD1306.h
+  this file is part of Lightweight_SSD1306 library
+
+  written by Siavash alizadeh (TECFIELD)
+  https://github.com/Tecfield-SIA
+  www.linkedin.com/in/siavash-alizadeh-tecfield
+
+  The Lightweight_SSD1306 library is inspired by 
+  the Adafruit_SSD1306 library but is not a direct copy or modification of it.
+  https://github.com/adafruit/Adafruit_SSD1306
+*/
+
 #ifndef LIGHTWEIGHT_SSD1306_H
 #define LIGHTWEIGHT_SSD1306_H
 
