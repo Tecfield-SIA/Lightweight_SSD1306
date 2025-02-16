@@ -223,7 +223,7 @@ void Lightweight_SSD1306::drawChar(int16_t x, int16_t y, char c, uint16_t color,
 void Lightweight_SSD1306::drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color) {
     for (int16_t j = 0; j < h; j++) {
         for (int16_t i = 0; i < w; i++) {
-            if (bitmap[i + (j / 8) * w] & (1 << (j % 8))) {
+            if (pgm_read_byte(&bitmap[j * (w / 8) + (i / 8)]) & (1 << (7 - (i % 8)))) {
                 drawPixel(x + i, y + j, color);
             }
         }
