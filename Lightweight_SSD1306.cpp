@@ -217,9 +217,8 @@ void Lightweight_SSD1306::print(int number) {
 
 
 void Lightweight_SSD1306::print(float number) {
-  char buffer[12];
-  sprintf(buffer, "%.2f", number);
-  print(buffer);
+  String str = String(number, 2);
+  print(str.c_str());
 }
 
 
